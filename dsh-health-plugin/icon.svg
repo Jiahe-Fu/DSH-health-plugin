@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Health">
+  <title>DSH Health</title>
+  <!-- A moon (sleep-first) with a pulse line across it. Artwork may use its own
+       colours; the panel itself only uses host theme tokens. -->
+  <defs>
+    <linearGradient id="moon" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4c6ef5"/>
+      <stop offset="1" stop-color="#7c5cff"/>
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="28" fill="url(#moon)" opacity="0.12"/>
+  <path d="M40.5 12a22 22 0 1 0 11 38.6A24 24 0 0 1 40.5 12z" fill="url(#moon)"/>
+  <path d="M8 36h11l4-9 5 17 4.5-11 3 3h20.5"
+        fill="none" stroke="#ffffff" stroke-width="3"
+        stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+</svg>

@@ -1,0 +1,85 @@
+# dsh-health-plugin bundle patch. This file is what makes installing the package
+# enough to get a working setup: the Host row plus the «健康模式» agent preset,
+# declared together so a single install activates both.
+#
+# Two jobs:
+#   1. insert the Host half, which owns the health tools and the /api/health
+#      routes the Web panel reads;
+#   2. declare the "健康模式" Agent preset, so the mode sits beside 标准模式 /
+#      PTC 模式 / 极简模式 / 创造模式 in the new-task preset picker.
+#
+# A preset is created only by installing a bundle that declares it: nothing
+# edits a declaration in place. See the Harness's editing-cordis-compositions
+# skill for the declaration format.
+
+- insert:
+    # Row ids carry the package name, as every other bundle does. They changed
+    # with the rename from `dsh-health` to `dsh-health-plugin`, which is why
+    # installing over an older copy needs an uninstall first: two bundles
+    # declaring `preset-health` would collide.
+    - id: dsh-health-plugin
+      name: 'dsh-health-plugin'
+
+    # The mode itself. `id` is the stable identity stored on every session that
+    # selects it; `name`/`description` are what the picker shows.
+    - id: preset-health
+      name: '@deepseek-ai/dsh-agent-preset'
+      config:
+        id: health
+        name: 健康模式
+        description: >-
+          以私人健康顾问方式工作：记录并复盘健康数据，睡眠优先，用 CBT-I 处理失眠，
+          给出循证建议并明确不做诊断。健康数据存在本机明文档案中。
+        order: 10
+        plugins:
+          - id: persona
+            name: '@deepseek-ai/dsh-persona'
+            config:
+              prefix: >-
+                You are a personal health assistant powered by the {{model}} model.
+                You keep a plaintext health archive on this machine (dsh-health tools),
+                treat sleep as the primary lever, and apply CBT-I rather than sleep-hygiene
+                platitudes to insomnia. You do not diagnose, you do not adjust prescription
+                doses, and you route red-flag symptoms to urgent care instead of managing
+                them yourself.
+              suffix: Your working directory is {{cwd}}.
+          - id: agent-instructions
+            name: '@deepseek-ai/dsh-agent-instructions'
+            config:
+              maxBytes: 65536
+          - id: health-tools
+            name: 'dsh-health-plugin'
+          - id: tool-fs
+            name: '@deepseek-ai/dsh-tool-fs'
+          - id: tool-fs-search
+            name: '@deepseek-ai/dsh-tool-fs-search'
+            # Required by this row's Config schema. Omitting it rejects the row's
+            # config and the preset then fails activation — visible only as a
+            # broken mode in the picker. `tools/validate-preset.mjs` checks every
+            # child row against its package schema so this cannot slip back in.
+            config:
+              sampleOverCapGlobResults: true
+          - id: tool-pwsh
+            name: '@deepseek-ai/dsh-tool-pwsh'
+            disabled: !!js process.platform !== 'win32'
+          - id: tool-bash
+            name: '@deepseek-ai/dsh-tool-bash'
+            disabled: !!js process.platform === 'win32'
+          - id: tool-web
+            name: '@deepseek-ai/dsh-tool-web'
+          - id: tool-todo
+            name: '@deepseek-ai/dsh-tool-todo'
+            config:
+              allowParallelInProgress: true
+          - id: tool-present
+            name: '@deepseek-ai/dsh-tool-present'
+          # "昨晚" / "上周三" must resolve to a real date before anything is
+          # written to the diary, otherwise entries land on the wrong day.
+          - id: time-context
+            name: '@deepseek-ai/dsh-time-context'
+          # Durable reminders delivered back into this Session: the bedtime and
+          # medication nudges that a health mode is useless without. Verified to
+          # provide schedule_create / schedule_list / schedule_update /
+          # schedule_delete.
+          - id: schedule
+            name: '@deepseek-ai/dsh-schedule'

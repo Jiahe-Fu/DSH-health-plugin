@@ -1,0 +1,68 @@
+{
+  "name": "dsh-health-plugin",
+  "version": "0.1.0",
+  "description": "深寻 Harness 健康插件：本地明文健康档案、睡眠优先的 CBT-I 方案、健康模式 agent preset、用药提醒与带引用的药物查询",
+  "license": "MIT",
+  "author": "TODO: 你的名字或 GitHub handle",
+  "type": "module",
+  "icon": "./icon.svg",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json",
+    "./src/*": "./src/*"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "src",
+    "skills",
+    "locale",
+    "icon.svg",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test tests/data-layer.test.mjs tests/client-panel.test.mjs tests/drug-web.test.mjs",
+    "test:host": "node --test tests/host-plugin.test.mjs",
+    "preflight": "node tools/preflight.mjs",
+    "validate:preset": "node tools/validate-preset.mjs"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "health",
+    "sleep",
+    "insomnia",
+    "cbt-i",
+    "medication-reminder",
+    "local-first"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-tools": "^0.2.0-rc.2",
+    "@deepseek-ai/dsh-llm": "^0.2.0-rc.2",
+    "@deepseek-ai/dsh-agent-preset": "^0.2.0-rc.2"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh-tools": { "optional": false },
+    "@deepseek-ai/dsh-llm": { "optional": true },
+    "@deepseek-ai/dsh-agent-preset": { "optional": true }
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": []
+    }
+  }
+}
